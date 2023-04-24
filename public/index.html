@@ -17,10 +17,17 @@
       <button type="submit">Asignar tareas</button>
     </form>
     <br />
-    <div id="output"></div>
+    <div id="output_C"></div>
+    <div id="output_C_time"></div>
+    <br />
+    <div id="output_JS"></div>
+    <div id="output_JS_time"></div>
     <script>
       const form = document.querySelector('form');
-      const output = document.querySelector('#output');
+      const outputC = document.querySelector('#output_C');
+      const outputCTime = document.querySelector('#output_C_time');
+      const outputJS = document.querySelector('#output_JS');
+      const outputJSTime = document.querySelector('#output_JS_time');
 
       form.addEventListener('submit', (event) => {
         event.preventDefault();
@@ -30,11 +37,12 @@
           .map((task) => parseInt(task));
         const clusters = parseInt(document.querySelector('#clusters').value);
 
-        var bytesPerElement = 4; // assuming each element is a 32-bit integer
-        var tasksPtr = _malloc(tasks.length * bytesPerElement);
+        const bytesPerElement = 4; // assuming each element is a 32-bit integer
+        const tasksPtr = _malloc(tasks.length * bytesPerElement);
         Module.HEAP32.set(tasks, tasksPtr / bytesPerElement);
 
-        const result = UTF8ToString(
+        const t0 = performance.now();
+        const resultC = UTF8ToString(
           Module.ccall(
             'solution',
             'number',
@@ -42,15 +50,29 @@
             [tasks.length, tasksPtr, clusters]
           )
         );
+        const t1 = performance.now();
 
-        console.log(
-          'JDISOAJDOISAJDOIJSOAIJDOIASJDOISA',
-          solution(tasks.length, tasks, clusters)
-        );
-
-        output.textContent = `Asignación: ${result.split('').join(', ')}`;
+        console.log(`C code execution time: ${t1 - t0} milliseconds`);
+        outputC.textContent = `Asignación código C: ${resultC
+          .split('')
+          .join(', ')}`;
+        outputCTime.textContent = `Tiempo de ejecución código C: ${
+          t1 - t0
+        } milisegundos`;
 
         _free(tasksPtr);
+
+        const t2 = performance.now();
+        const resultJS = solution(tasks.length, tasks, clusters);
+        const t3 = performance.now();
+
+        console.log(`JS code execution time: ${t3 - t2} milliseconds`);
+        outputJS.textContent = `Asignación código JS: ${resultJS
+          .split('')
+          .join(', ')}`;
+        outputJSTime.textContent = `Tiempo de ejecución código JS: ${
+          t3 - t2
+        } milisegundos`;
       });
     </script>
   </body>
