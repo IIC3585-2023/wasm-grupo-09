@@ -6,7 +6,7 @@ class State {
   }
 }
 
-// Función para generar una solución inicial aleatoria
+// Función para generate una solución inicial aleatoria
 function generateInitialSolution(n, l, times) {
   const assignments = [];
   for (let i = 0; i < n; i++) {
@@ -52,7 +52,7 @@ function printTheoricTimes(n, l, times) {
 }
 
 // Función para encontrar una solución vecina mediante la heurística de intercambio de un task
-function generarVecinoIntercambioTask(indexTask, l, times, assignments) {
+function generateNeighbourIntercambioTask(indexTask, l, times, assignments) {
   const neighbour = new State(indexTask, Math.floor(Math.random() % l));
   return neighbour;
 }
@@ -68,30 +68,30 @@ function calculateTimeMaxTemporalAssignment(l, assignments, times, neighbour) {
 }
 
 // Función para encontrar la solución vecina con menor tiempo de cluster
-function findBestNeighbour(n, l, times, assignments, generarVecino) {
+function findBestNeighbour(n, l, times, assignments, generateNeighbour) {
   let bestNeighbour = assignments[0];
   let bestTime = getMaxTimesFromCluster(assignments, times, l);
 
   for (let i = 0; i < n; i++) {
     // asignacion "item - cluster" aleatoria
-    const neighbour = generarVecino(i, l, times, assignments);
+    const neighbour = generateNeighbour(i, l, times, assignments);
     // calculo el tiempo de esa cluster
-    const tiempoVecino = calculateTimeMaxTemporalAssignment(
+    const tiempoNeighbour = calculateTimeMaxTemporalAssignment(
       l,
       assignments,
       times,
       neighbour
     );
-    if (tiempoVecino < bestTime) {
+    if (tiempoNeighbour < bestTime) {
       bestNeighbour = neighbour;
-      bestTime = tiempoVecino;
+      bestTime = tiempoNeighbour;
     }
   }
   return bestNeighbour;
 }
 
 // Función para el algoritmo de búsqueda Local
-function localSearch(n, l, times, assignments, generarVecino) {
+function localSearch(n, l, times, assignments, generateNeighbour) {
   let iterations = 0;
   while (iterations < 10000) {
     let bestNeighbour = findBestNeighbour(
@@ -99,7 +99,7 @@ function localSearch(n, l, times, assignments, generarVecino) {
       l,
       times,
       assignments,
-      generarVecino
+      generateNeighbour
     );
     assignments[bestNeighbour.task].cluster = bestNeighbour.cluster;
     iterations++;
@@ -120,8 +120,8 @@ function solution(n, times, l) {
   );
 
   // Ejecutar el algoritmo de Búsqueda Local
-  localSearch(n, l, times, assignments, generarVecinoIntercambioTask);
-  // localSearch(n, l, times, assignments, generarVecinoIntercambioDosTasks);
+  localSearch(n, l, times, assignments, generateNeighbourIntercambioTask);
+  // localSearch(n, l, times, assignments, generateNeighbourIntercambioDosTasks);
 
   // Imprimir los times de cada cluster
   printTimesEachCluster(assignments, times, l);

@@ -9,7 +9,7 @@ typedef struct
   int cluster; // Índice de la cluster asignada
 } State;
 
-// Función para generar una solución inicial aleatoria
+// Función para generate una solución inicial aleatoria
 void generateInitialSolution(int n, int l, int times[], State assignments[])
 {
   for (int i = 0; i < n; i++)
@@ -78,7 +78,7 @@ void printTheoricTimes(int n, int l, int times[])
 }
 
 // Función para encontrar una solución vecina mediante la heurística de intercambio de un task
-State generarVecinoIntercambioTask(int indexTask, int l, int times[], State assignments[])
+State generateNeighbourIntercambioTask(int indexTask, int l, int times[], State assignments[])
 {
   State neighbour;
   neighbour.task = indexTask;     // Seleccionar un task al azar
@@ -98,7 +98,7 @@ int calculateTimeMaxTemporalAssignment(int l, State assignments[], int n, int ti
 }
 
 // Función para encontrar la solución vecina con menor tiempo de cluster
-State findBestNeighbour(int n, int l, int times[], State assignments[], State (*generarVecino)(int, int, int[], State[]))
+State findBestNeighbour(int n, int l, int times[], State assignments[], State (*generateNeighbour)(int, int, int[], State[]))
 {
   State bestNeighbour = assignments[0];
   int bestTime = getMaxTimesFromCluster(l, assignments, n, times);
@@ -106,25 +106,25 @@ State findBestNeighbour(int n, int l, int times[], State assignments[], State (*
   for (int i = 0; i < n; i++)
   {
     // asignacion "item - cluster" aleatoria
-    State neighbour = generarVecino(i, l, times, assignments);
+    State neighbour = generateNeighbour(i, l, times, assignments);
     // calculo el tiempo de esa cluster
-    int tiempoVecino = calculateTimeMaxTemporalAssignment(l, assignments, n, times, neighbour);
-    if (tiempoVecino < bestTime)
+    int tiempoNeighbour = calculateTimeMaxTemporalAssignment(l, assignments, n, times, neighbour);
+    if (tiempoNeighbour < bestTime)
     {
       bestNeighbour = neighbour;
-      bestTime = tiempoVecino;
+      bestTime = tiempoNeighbour;
     }
   }
   return bestNeighbour;
 }
 
 // Función para el algoritmo de búsqueda Local
-void localSearch(int n, int l, int times[], State assignments[], State (*generarVecino)(int, int, int[], State[]))
+void localSearch(int n, int l, int times[], State assignments[], State (*generateNeighbour)(int, int, int[], State[]))
 {
   int iterations = 0;
   while (iterations < 10000)
   {
-    State bestNeighbour = findBestNeighbour(n, l, times, assignments, generarVecino);
+    State bestNeighbour = findBestNeighbour(n, l, times, assignments, generateNeighbour);
     assignments[bestNeighbour.task].cluster = bestNeighbour.cluster;
     iterations++;
   }
@@ -144,8 +144,8 @@ char *solution(int n, int times[], int l)
   printf("Cluster con más tiempo -> %d\n", getMaxTimesFromCluster(l, assignments, n, times));
 
   // Ejecutar el algoritmo de Búsqueda Local
-  localSearch(n, l, times, assignments, generarVecinoIntercambioTask);
-  // localSearch(n, l, times, assignments, generarVecinoIntercambioDosTasks);
+  localSearch(n, l, times, assignments, generateNeighbourIntercambioTask);
+  // localSearch(n, l, times, assignments, generateNeighbourIntercambioDosTasks);
 
   // Imprimir los times de cada cluster
   printTimesEachCluster(l, assignments, n, times);
