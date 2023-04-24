@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>WASM grupo 09</title>
+  </head>
+  <body>
+    <script src="main.js"></script>
+    <!-- <script src="mainO1.js"></script> -->
+    <script src="script.js"></script>
+    <form>
+      <label for="tasks">Introduzca las tareas separadas por comas ",":</label>
+      <input type="string" id="tasks" name="tasks" />
+      <label for="clusters">Introduzca el número de clusters:</label>
+      <input type="number" id="clusters" name="clusters" />
+      <button type="submit">Asignar tareas</button>
+    </form>
+    <br />
+    <div id="output_C"></div>
+    <div id="output_C_time"></div>
+    <br />
+    <div id="output_JS"></div>
+    <div id="output_JS_time"></div>
+    <!-- <br />
+    <div id="output_C_O1"></div>
+    <div id="output_C_O1_time"></div> -->
+    <script>
+      const form = document.querySelector('form');
+      const outputC = document.querySelector('#output_C');
+      const outputCTime = document.querySelector('#output_C_time');
+      const outputJS = document.querySelector('#output_JS');
+      const outputJSTime = document.querySelector('#output_JS_time');
+      // const outputCO1 = document.querySelector('#output_C_O1');
+      // const outputCO1Time = document.querySelector('#output_C_O1_time');
+
+      form.addEventListener('submit', (event) => {
+        event.preventDefault();
+        const tasks = document
+          .querySelector('#tasks')
+          .value.split(',')
+          .map((task) => parseInt(task));
+        const clusters = parseInt(document.querySelector('#clusters').value);
+
+        const bytesPerElement = 4; // assuming each element is a 32-bit integer
+        const tasksPtr = _malloc(tasks.length * bytesPerElement);
+        Module.HEAP32.set(tasks, tasksPtr / bytesPerElement);
+
+        const t0 = performance.now();
+        const resultC = UTF8ToString(
+          Module.ccall(
+            'solution',
+            'number',
+            ['number', 'number', 'number'],
+            [tasks.length, tasksPtr, clusters]
+          )
+        );
+        const t1 = performance.now();
+
+        console.log(`C code execution time: ${t1 - t0} milliseconds`);
+        outputC.textContent = `Asignación código C: ${resultC
+          .split('')
+          .join(', ')}`;
+        outputCTime.textContent = `Tiempo de ejecución código C: ${
+          t1 - t0
+        } milisegundos`;
+
+        const t2 = performance.now();
+        const resultJS = solution(tasks.length, tasks, clusters);
+        const t3 = performance.now();
+
+        console.log(`JS code execution time: ${t3 - t2} milliseconds`);
+        outputJS.textContent = `Asignación código JS: ${resultJS
+          .split('')
+          .join(', ')}`;
+        outputJSTime.textContent = `Tiempo de ejecución código JS: ${
+          t3 - t2
+        } milisegundos`;
+
+        // const t4 = performance.now();
+        // const resultCO1 = UTF8ToString(
+        //   Module.ccall(
+        //     'solutionO1',
+        //     'number',
+        //     ['number', 'number', 'number'],
+        //     [tasks.length, tasksPtr, clusters]
+        //   )
+        // );
+        // const t5 = performance.now();
+
+        // console.log(`CO1 code execution time: ${t5 - t4} milliseconds`);
+        // outputCO1.textContent = `Asignación código CO1: ${resultCO1
+        //   .split('')
+        //   .join(', ')}`;
+        // outputCO1Time.textContent = `Tiempo de ejecución código CO1: ${
+        //   t5 - t4
+        // } milisegundos`;
+
+        _free(tasksPtr);
+      });
+    </script>
+  </body>
+</html>
