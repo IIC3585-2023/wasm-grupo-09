@@ -129,7 +129,7 @@ void busquedaLocal(int n, int l, int pesos[], Estado asignaciones[], Estado (*ge
   }
 }
 
-void solution(int n, int pesos[], int l)
+char *solution(int n, int pesos[], int l)
 {
   srand(time(NULL)); // Inicializar generador de números aleatorios
 
@@ -149,8 +149,16 @@ void solution(int n, int pesos[], int l)
   // Imprimir los pesos de cada mochila
   imprimirPesosCadaMochila(l, asignaciones, n, pesos);
   imprimirPesoTeorico(n, l, pesos);
-  // imprimirAsignacion(n, asignaciones);
+  imprimirAsignacion(n, asignaciones);
   printf("mochila mas pesada -> %d\n", obtenerPesoDeMochilaMasPesada(l, asignaciones, n, pesos));
+
+  // return a string with the asignaciones variable
+  char *asignaciones_string = (char *)malloc(n * sizeof(char));
+  for (int i = 0; i < n; i++)
+  {
+    asignaciones_string[i] = asignaciones[i].mochila + '0';
+  }
+  return asignaciones_string;
 }
 
 int main()
