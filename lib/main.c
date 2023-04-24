@@ -78,7 +78,7 @@ void printTheoricTimes(int n, int l, int times[])
 }
 
 // Función para encontrar una solución vecina mediante la heurística de intercambio de un task
-State generateNeighbourIntercambioTask(int indexTask, int l, int times[], State assignments[])
+State generateNeighbourExchangeTask(int indexTask, int l, int times[], State assignments[])
 {
   State neighbour;
   neighbour.task = indexTask;     // Seleccionar un task al azar
@@ -97,7 +97,7 @@ int calculateTimeMaxTemporalAssignment(int l, State assignments[], int n, int ti
   return timeMaxCluster;
 }
 
-// Función para encontrar la solución vecina con menor tiempo de cluster
+// Función para encontrar la solución vecina con menor time de cluster
 State findBestNeighbour(int n, int l, int times[], State assignments[], State (*generateNeighbour)(int, int, int[], State[]))
 {
   State bestNeighbour = assignments[0];
@@ -107,12 +107,12 @@ State findBestNeighbour(int n, int l, int times[], State assignments[], State (*
   {
     // asignacion "item - cluster" aleatoria
     State neighbour = generateNeighbour(i, l, times, assignments);
-    // calculo el tiempo de esa cluster
-    int tiempoNeighbour = calculateTimeMaxTemporalAssignment(l, assignments, n, times, neighbour);
-    if (tiempoNeighbour < bestTime)
+    // calculo el time de esa cluster
+    int timeNeighbour = calculateTimeMaxTemporalAssignment(l, assignments, n, times, neighbour);
+    if (timeNeighbour < bestTime)
     {
       bestNeighbour = neighbour;
-      bestTime = tiempoNeighbour;
+      bestTime = timeNeighbour;
     }
   }
   return bestNeighbour;
@@ -144,8 +144,8 @@ char *solution(int n, int times[], int l)
   printf("Cluster con más tiempo -> %d\n", getMaxTimesFromCluster(l, assignments, n, times));
 
   // Ejecutar el algoritmo de Búsqueda Local
-  localSearch(n, l, times, assignments, generateNeighbourIntercambioTask);
-  // localSearch(n, l, times, assignments, generateNeighbourIntercambioDosTasks);
+  localSearch(n, l, times, assignments, generateNeighbourExchangeTask);
+  // localSearch(n, l, times, assignments, generateNeighbourExchangeDosTasks);
 
   // Imprimir los times de cada cluster
   printTimesEachCluster(l, assignments, n, times);

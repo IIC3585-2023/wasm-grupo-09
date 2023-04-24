@@ -10,7 +10,7 @@ class State {
 function generateInitialSolution(n, l, times) {
   const assignments = [];
   for (let i = 0; i < n; i++) {
-    assignments.push(new State(i, Math.floor(Math.random() % l)));
+    assignments.push(new State(i, Math.floor(Math.random() * l)));
   }
   return assignments;
 }
@@ -52,8 +52,8 @@ function printTheoricTimes(n, l, times) {
 }
 
 // Función para encontrar una solución vecina mediante la heurística de intercambio de un task
-function generateNeighbourIntercambioTask(indexTask, l, times, assignments) {
-  const neighbour = new State(indexTask, Math.floor(Math.random() % l));
+function generateNeighbourExchangeTask(indexTask, l, times, assignments) {
+  const neighbour = new State(indexTask, Math.floor(Math.random() * l));
   return neighbour;
 }
 
@@ -120,8 +120,8 @@ function solution(n, times, l) {
   );
 
   // Ejecutar el algoritmo de Búsqueda Local
-  localSearch(n, l, times, assignments, generateNeighbourIntercambioTask);
-  // localSearch(n, l, times, assignments, generateNeighbourIntercambioDosTasks);
+  localSearch(n, l, times, assignments, generateNeighbourExchangeTask);
+  // localSearch(n, l, times, assignments, generateNeighbourExchangeDosTasks);
 
   // Imprimir los times de cada cluster
   printTimesEachCluster(assignments, times, l);
