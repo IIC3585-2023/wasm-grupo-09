@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>WASM grupo 09</title>
+    <!-- <script src="script.js"></script> -->
+  </head>
+  <body>
+    <script src="main.js"></script>
+    <form>
+      <!-- <label for="tasks_number">Introduzca el número de tareas:</label>
+      <input type="number" id="tasks_number" name="tasks_number" /> -->
+      <label for="tasks">Introduzca las tareas separadas por comas ",":</label>
+      <input type="string" id="tasks" name="tasks" />
+      <label for="clusters">Introduzca el número de clusters:</label>
+      <input type="number" id="clusters" name="clusters" />
+      <button type="submit">Asignar tareas</button>
+    </form>
+    <div id="output"></div>
+    <script>
+      // Module['onRuntimeInitialized'] = () => {
+      //   console.log('WASM cargado');
+      //   _solution();
+      // };
+      const form = document.querySelector('form');
+      const output = document.querySelector('#output');
+
+      form.addEventListener('submit', (event) => {
+        event.preventDefault();
+        // const tasks_number = parseInt(
+        //   document.querySelector('#tasks_number').value
+        // );
+        const tasks = document
+          .querySelector('#tasks')
+          .value.split(',')
+          .map((task) => parseInt(task));
+        const clusters = parseInt(document.querySelector('#clusters').value);
+
+        var bytesPerElement = 4; // assuming each element is a 32-bit integer
+        var tasksPtr = _malloc(tasks.length * bytesPerElement);
+        Module.HEAP32.set(tasks, tasksPtr / bytesPerElement);
+
+        console.log(
+          Module.ccall(
+            'solution',
+            'void',
+            ['number', 'number', 'number'],
+            [tasks.length, tasksPtr, clusters]
+          )
+        );
+
+        // console.log(_solution(tasks.length, tasksPtr, clusters));
+        // console.log(
+        //   Module.ccall(
+        //     'solution',
+        //     'void',
+        //     ['int', 'array', 'int'],
+        //     [tasks_number, tasks, clusters]
+        //   )
+        // );
+
+        // output.textContent = `El cuadrado de ${input} es ${2 * input}`;
+
+        _free(tasksPtr);
+      });
+    </script>
+  </body>
+</html>
