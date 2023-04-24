@@ -40,6 +40,7 @@ int *getTimesEachCluster(int l, State assignments[], int n, int times[])
   }
   return timesClusters;
 }
+
 void printTimesEachCluster(int l, State assignments[], int n, int times[])
 {
   printf("Tiempo total de cada cluster:\n");
@@ -117,7 +118,7 @@ State findBestNeighbour(int n, int l, int times[], State assignments[], State (*
   return bestNeighbour;
 }
 
-// Función para el algoritmo de Búsqueda Local
+// Función para el algoritmo de búsqueda Local
 void localSearch(int n, int l, int times[], State assignments[], State (*generarVecino)(int, int, int[], State[]))
 {
   int iterations = 0;

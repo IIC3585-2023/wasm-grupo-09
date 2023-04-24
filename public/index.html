@@ -8,6 +8,7 @@
   </head>
   <body>
     <script src="main.js"></script>
+    <script src="script.js"></script>
     <form>
       <label for="tasks">Introduzca las tareas separadas por comas ",":</label>
       <input type="string" id="tasks" name="tasks" />
@@ -40,6 +41,11 @@
             ['number', 'number', 'number'],
             [tasks.length, tasksPtr, clusters]
           )
+        );
+
+        console.log(
+          'JDISOAJDOISAJDOIJSOAIJDOIASJDOISA',
+          solution(tasks.length, tasks, clusters)
         );
 
         output.textContent = `Asignación: ${result.split('').join(', ')}`;
