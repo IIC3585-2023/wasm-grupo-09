@@ -8,6 +8,7 @@
   </head>
   <body>
     <script src="main.js"></script>
+    <!-- <script src="mainO1.js"></script> -->
     <script src="script.js"></script>
     <form>
       <label for="tasks">Introduzca las tareas separadas por comas ",":</label>
@@ -22,12 +23,17 @@
     <br />
     <div id="output_JS"></div>
     <div id="output_JS_time"></div>
+    <br />
+    <div id="output_C_O1"></div>
+    <div id="output_C_O1_time"></div>
     <script>
       const form = document.querySelector('form');
       const outputC = document.querySelector('#output_C');
       const outputCTime = document.querySelector('#output_C_time');
       const outputJS = document.querySelector('#output_JS');
       const outputJSTime = document.querySelector('#output_JS_time');
+      const outputCO1 = document.querySelector('#output_C_O1');
+      const outputCO1Time = document.querySelector('#output_C_O1_time');
 
       form.addEventListener('submit', (event) => {
         event.preventDefault();
@@ -60,8 +66,6 @@
           t1 - t0
         } milisegundos`;
 
-        _free(tasksPtr);
-
         const t2 = performance.now();
         const resultJS = solution(tasks.length, tasks, clusters);
         const t3 = performance.now();
@@ -73,6 +77,27 @@
         outputJSTime.textContent = `Tiempo de ejecución código JS: ${
           t3 - t2
         } milisegundos`;
+
+        const t4 = performance.now();
+        const resultCO1 = UTF8ToString(
+          Module.ccall(
+            'solutionO1',
+            'number',
+            ['number', 'number', 'number'],
+            [tasks.length, tasksPtr, clusters]
+          )
+        );
+        const t5 = performance.now();
+
+        console.log(`CO1 code execution time: ${t5 - t4} milliseconds`);
+        outputCO1.textContent = `Asignación código CO1: ${resultCO1
+          .split('')
+          .join(', ')}`;
+        outputCO1Time.textContent = `Tiempo de ejecución código CO1: ${
+          t5 - t4
+        } milisegundos`;
+
+        _free(tasksPtr);
       });
     </script>
   </body>

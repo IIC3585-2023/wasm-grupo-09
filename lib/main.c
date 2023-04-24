@@ -140,8 +140,8 @@ char *solution(int n, int times[], int l)
 
   // Imprimir la asignación inicial
   // printAssignment(n, assignments);
-  printTimesEachCluster(l, assignments, n, times);
-  printf("Cluster con más tiempo -> %d\n", getMaxTimesFromCluster(l, assignments, n, times));
+  // printTimesEachCluster(l, assignments, n, times);
+  // printf("Cluster con más tiempo -> %d\n", getMaxTimesFromCluster(l, assignments, n, times));
 
   // Ejecutar el algoritmo de Búsqueda Local
   localSearch(n, l, times, assignments, generateNeighbourExchangeTask);
@@ -150,8 +150,8 @@ char *solution(int n, int times[], int l)
   // Imprimir los times de cada cluster
   printTimesEachCluster(l, assignments, n, times);
   printTheoricTimes(n, l, times);
-  printAssignment(n, assignments);
-  printf("Cluster con más tiempo -> %d\n", getMaxTimesFromCluster(l, assignments, n, times));
+  // printAssignment(n, assignments);
+  // printf("Cluster con más tiempo -> %d\n", getMaxTimesFromCluster(l, assignments, n, times));
 
   // return a string with the assignments variable
   char *assignmentsString = (char *)malloc(n * sizeof(char));

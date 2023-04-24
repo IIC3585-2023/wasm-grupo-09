@@ -61,30 +61,35 @@ function generateNeighbourExchangeTask(indexTask, l, times, assignments) {
 // luego retorna las assignments a su estado original
 function calculateTimeMaxTemporalAssignment(l, assignments, times, neighbour) {
   const oldAssignation = assignments[neighbour.task];
+  const task = oldAssignation.task;
+  const oldCluster = oldAssignation.cluster;
   assignments[neighbour.task].cluster = neighbour.cluster;
   const timeMaxCluster = getMaxTimesFromCluster(assignments, times, l);
-  assignments[neighbour.task].cluster = oldAssignation.cluster;
+  assignments[task].cluster = oldCluster;
   return timeMaxCluster;
 }
 
-// Función para encontrar la solución vecina con menor tiempo de cluster
+// Función para encontrar la solución vecina con menor time de cluster
 function findBestNeighbour(n, l, times, assignments, generateNeighbour) {
   let bestNeighbour = assignments[0];
   let bestTime = getMaxTimesFromCluster(assignments, times, l);
 
+  let neighbour;
+  let timeNeighbour;
+
   for (let i = 0; i < n; i++) {
     // asignacion "item - cluster" aleatoria
-    const neighbour = generateNeighbour(i, l, times, assignments);
-    // calculo el tiempo de esa cluster
-    const tiempoNeighbour = calculateTimeMaxTemporalAssignment(
+    neighbour = generateNeighbourExchangeTask(i, l, times, assignments);
+    // calculo el time de esa cluster
+    timeNeighbour = calculateTimeMaxTemporalAssignment(
       l,
       assignments,
       times,
       neighbour
     );
-    if (tiempoNeighbour < bestTime) {
+    if (timeNeighbour < bestTime) {
       bestNeighbour = neighbour;
-      bestTime = tiempoNeighbour;
+      bestTime = timeNeighbour;
     }
   }
   return bestNeighbour;
@@ -93,8 +98,9 @@ function findBestNeighbour(n, l, times, assignments, generateNeighbour) {
 // Función para el algoritmo de búsqueda Local
 function localSearch(n, l, times, assignments, generateNeighbour) {
   let iterations = 0;
+  let bestNeighbour;
   while (iterations < 10000) {
-    let bestNeighbour = findBestNeighbour(
+    bestNeighbour = findBestNeighbour(
       n,
       l,
       times,
@@ -114,10 +120,10 @@ function solution(n, times, l) {
 
   // Imprimir la asignación inicial
   // printAssignment(n, assignments);
-  printTimesEachCluster(assignments, times, l);
-  console.log(
-    'Cluster con más tiempo -> ' + getMaxTimesFromCluster(assignments, times, l)
-  );
+  // printTimesEachCluster(assignments, times, l);
+  // console.log(
+  //   'Cluster con más time -> ' + getMaxTimesFromCluster(assignments, times, l)
+  // );
 
   // Ejecutar el algoritmo de Búsqueda Local
   localSearch(n, l, times, assignments, generateNeighbourExchangeTask);
@@ -126,10 +132,10 @@ function solution(n, times, l) {
   // Imprimir los times de cada cluster
   printTimesEachCluster(assignments, times, l);
   printTheoricTimes(n, l, times);
-  printAssignment(assignments);
-  console.log(
-    'Cluster con más tiempo -> ' + getMaxTimesFromCluster(assignments, times, l)
-  );
+  // printAssignment(assignments);
+  // console.log(
+  //   'Cluster con más time -> ' + getMaxTimesFromCluster(assignments, times, l)
+  // );
 
   // return a string with the assignments variable
   let assignmentsString = '';
